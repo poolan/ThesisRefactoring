@@ -25,68 +25,54 @@ def update_quality(items: Iterable[Item]):
     for item in items:
         update_quality_single_item(item)
 
-class ItemUpdater(Protocol): 
-    def update_quality(self, item: Item) -> None:
-        ...
-    def update_sell_in(sel, item: Item) -> None:
-        ...
+class ItemUpdater(Protocol):
+    def update_sell_in(self, item: Item) -> None: ...
+
+    def update_quality(self, item: Item) -> None: ...
 
 class DefaultItemUpdater:
+    def update_sell_in(self, item: Item) -> None:
+        item.sell_in = item.sell_in - 1
+
     def update_quality(self, item: Item) -> None:
         decrease_item_quality(item)
         if item.sell_in < 0:
             decrease_item_quality(item)
 
-class AgedBrieUpdater(DefaultItemUpdater):
+class AgedBrieItemUpdater(DefaultItemUpdater):
     def update_quality(self, item: Item) -> None:
         increase_item_quality(item)
         if item.sell_in < 0:
             increase_item_quality(item)
         
-class BackStagePassesUpdater(DefaultItemUpdater):
+class BackstagePassesItemUpdater(DefaultItemUpdater):
     def update_quality(self, item: Item) -> None:
+        increase_item_quality(item)
         if item.sell_in < 10:
             increase_item_quality(item)
-        if item.sell_in < 5: 
+        if item.sell_in < 5:
             increase_item_quality(item)
         if item.sell_in < 0:
             item.quality = 0
 
-class SulfurasUpdater(DefaultItemUpdater):
-    def update_quality(self, item: Item) -> None:
-        pass
-
+class SulfurasItemUpdater(DefaultItemUpdater):
     def update_sell_in(self, item: Item) -> None:
         pass
 
+    def update_quality(self, item: Item) -> None:
+        pass
+
+ITEM_UPDATERS: dict[str, ItemUpdater] = {
+    AGED_BRIE: AgedBrieItemUpdater(),
+    BACKSTAGE_PASSES: BackstagePassesItemUpdater(),
+    SULFURAS: SulfurasItemUpdater(),
+}
+
 
 def update_quality_single_item(item: Item):
-        if item.name == SULFURAS:
-            pass
-        else:
-            item.sell_in = item.sell_in - 1
+        item_updater = ITEM_UPDATERS.get(item.name, DefaultItemUpdater())
 
-        if item.name == AGED_BRIE:
-            increase_item_quality(item)
-            if item.sell_in < 0:
-                increase_item_quality(item)
-        elif item.name == BACKSTAGE_PASSES:
-            increase_item_quality(item)
-            if item.sell_in < 10:
-                increase_item_quality(item)
-            if item.sell_in < 5:
-                increase_item_quality(item)
-            if item.sell_in < 0:
-                item.quality = 0
-        elif item.name == SULFURAS:
-          pass
-        else: 
-            decrease_item_quality(item)
-            if item.sell_in < 0:
-                decrease_item_quality(item)
+        item_updater.update_sell_in(item)
+        item_updater.update_quality(item)
+       
             
-                    
-        
-                
-
-
