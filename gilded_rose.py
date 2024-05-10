@@ -37,6 +37,29 @@ class DefaultItemUpdater:
         if item.sell_in < 0:
             decrease_item_quality(item)
 
+class AgedBrieUpdater(DefaultItemUpdater):
+    def update_quality(self, item: Item) -> None:
+        increase_item_quality(item)
+        if item.sell_in < 0:
+            increase_item_quality(item)
+        
+class BackStagePassesUpdater(DefaultItemUpdater):
+    def update_quality(self, item: Item) -> None:
+        if item.sell_in < 10:
+            increase_item_quality(item)
+        if item.sell_in < 5: 
+            increase_item_quality(item)
+        if item.sell_in < 0:
+            item.quality = 0
+
+class SulfurasUpdater(DefaultItemUpdater):
+    def update_quality(self, item: Item) -> None:
+        pass
+
+    def update_sell_in(self, item: Item) -> None:
+        pass
+
+
 def update_quality_single_item(item: Item):
         if item.name == SULFURAS:
             pass
