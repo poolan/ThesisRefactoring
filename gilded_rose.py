@@ -17,6 +17,11 @@ class Item:
 
 def update_quality(items: Iterable[Item]):
     for item in items:
+        update_quality_single_item(item)
+
+def update_quality_single_item(item: Item):
+        if item.name != SULFURAS:
+            item.sell_in = item.sell_in - 1
         if item.name != AGED_BRIE and item.name != BACKSTAGE_PASSES:
             if item.quality > 0:
                 if item.name != SULFURAS:
@@ -25,14 +30,12 @@ def update_quality(items: Iterable[Item]):
             if item.quality < 50:
                 item.quality = item.quality + 1
                 if item.name == BACKSTAGE_PASSES:
-                    if item.sell_in < 11:
+                    if item.sell_in < 10:
                         if item.quality < 50:
                             item.quality = item.quality + 1
-                    if item.sell_in < 6:
+                    if item.sell_in < 5:
                         if item.quality < 50:
                             item.quality = item.quality + 1
-        if item.name != SULFURAS:
-            item.sell_in = item.sell_in - 1
         if item.sell_in < 0:
             if item.name != AGED_BRIE:
                 if item.name != BACKSTAGE_PASSES:
