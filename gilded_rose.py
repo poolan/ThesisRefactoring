@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Protocol
 
 # Item types
 AGED_BRIE = "Aged Brie"
@@ -24,6 +24,18 @@ def increase_item_quality(item: Item, amount: int = 1, max_quality: int = 50) ->
 def update_quality(items: Iterable[Item]):
     for item in items:
         update_quality_single_item(item)
+
+class ItemUpdater(Protocol): 
+    def update_quality(self, item: Item) -> None:
+        ...
+    def update_sell_in(sel, item: Item) -> None:
+        ...
+
+class DefaultItemUpdater:
+    def update_quality(self, item: Item) -> None:
+        decrease_item_quality(item)
+        if item.sell_in < 0:
+            decrease_item_quality(item)
 
 def update_quality_single_item(item: Item):
         if item.name == SULFURAS:
