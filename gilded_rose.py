@@ -62,10 +62,17 @@ class SulfurasItemUpdater(DefaultItemUpdater):
     def update_quality(self, item: Item) -> None:
         pass
 
+class ConjuredItemUpdater(DefaultItemUpdater):
+    def update_quality(self, item: Item) -> None:
+        decrease_item_quality(item, 2)
+        if item.sell_in < 0:
+            decrease_item_quality(item, 2)
+
 ITEM_UPDATERS: dict[str, ItemUpdater] = {
     AGED_BRIE: AgedBrieItemUpdater(),
     BACKSTAGE_PASSES: BackstagePassesItemUpdater(),
     SULFURAS: SulfurasItemUpdater(),
+    CONJURED: ConjuredItemUpdater(),
 }
 
 
@@ -74,5 +81,4 @@ def update_quality_single_item(item: Item):
 
         item_updater.update_sell_in(item)
         item_updater.update_quality(item)
-       
             
